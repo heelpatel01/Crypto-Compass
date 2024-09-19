@@ -46,9 +46,9 @@ async function handleSignup(req, res) {
 }
 
 async function handleLogin(req, res) {
-  const { userNameOrEmail, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!userNameOrEmail || !password) {
+  if (!email || !password) {
     return res.status(400).json({
       success: false,
       message: "Please fill all fields!",
@@ -56,9 +56,7 @@ async function handleLogin(req, res) {
   }
 
   try {
-    const user = await User.findOne({
-      $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }],
-    });
+    const user = await User.findOne({ email: email });
 
     if (!user) {
       return res.status(404).json({
@@ -96,6 +94,11 @@ async function handleLogout(req, res) {
       success: true,
       message: "User loggedout successfully!",
     });
+  } else {
+    return res.clearCookie("userId").json({
+      success: true,
+      message: "User already loggedout!",
+    });
   }
 }
 
@@ -128,9 +131,26 @@ async function handleBalanceFetching(req, res) {
     });
   }
 }
+
+async function handleIsLoggedin(req, res) {
+  const userId = req.cookies.userId;
+  const user = await User.findOne({ userId });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User is not loggedin!",
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    message: "User is exist!",
+  });
+}
 module.exports = {
   handleSignup,
   handleLogin,
   handleLogout,
   handleBalanceFetching,
+  handleIsLoggedin,
 };
