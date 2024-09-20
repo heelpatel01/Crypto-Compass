@@ -8,6 +8,7 @@ import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
 import "./index.css";
 import { AuthProvider } from "./contexts/AuthProvider.jsx";
+import Exchange from "./pages/Exchange.jsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Header from "./components/Header.jsx";
@@ -41,8 +42,15 @@ const router = createBrowserRouter([
     path: "/login",
     element: (
       <>
-        
         <Login />
+      </>
+    ),
+  },
+  {
+    path: "/exchange",
+    element: (
+      <>
+        <Exchange />
       </>
     ),
   },
