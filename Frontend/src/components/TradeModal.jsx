@@ -26,21 +26,20 @@ ChartJS.register(
 function TradeModal({ coin, onClose }) {
   const [quantity, setQuantity] = useState(1);
   const [chartData, setChartData] = useState(null);
-  const [tradeType, setTradeType] = useState();
   const [currentPrice, setCurrentPrice] = useState(coin.current_price);
   const [error, setError] = useState(null);
+  const [transactions, setTransactions] = useState([]); // To store transaction history
 
-  const handleBuy = async (e) => {
+  const handleBuy = async () => {
     if (!quantity || quantity * currentPrice < 100) {
-      setError("Please Select More Quntity!");
-      onClose();
+      setError("Please select a larger quantity!");
       return;
     }
 
     try {
       const response = await axiosInstance.post("/transaction/buy", {
         type: "buy",
-        coinId: coin.name,
+        coinId: coin.name.toLowerCase(),
         quantityOfCoins: quantity,
         priceAtTransaction: currentPrice,
       });
@@ -51,21 +50,19 @@ function TradeModal({ coin, onClose }) {
         return;
       }
     } catch (error) {
-      setError("Error while buy!" + error);
-      return;
+      setError("Error while buying: " + error);
     }
   };
 
-  const handleSell = async (e) => {
+  const handleSell = async () => {
     if (!quantity || quantity * currentPrice < 100) {
-      setError("Minimum should 100!");
-      onClose();
+      setError("Minimum trade should be at least ₹100!");
       return;
     }
 
     try {
       const response = await axiosInstance.post("/transaction/sell", {
-        coinId: coin.name,
+        coinId: coin.name.toLowerCase(),
         type: "sell",
         quantityOfCoins: quantity,
         priceAtTransaction: currentPrice,
@@ -76,18 +73,35 @@ function TradeModal({ coin, onClose }) {
         onClose();
         return;
       }
-      setError("Not got response of selling!");
-      return;
+      setError("Selling error: " + response.data.message);
     } catch (error) {
-      console.log("Error While Selling Coin:" + error);
-      setError(error);
-      return;
+      setError("Error while selling: " + error);
     }
   };
 
+  const fetchTransactions = async () => {
+    try {
+      const response = await axiosInstance.get(
+        "/transaction/showtransactions",
+        {
+          params: {
+            coinId: coin.name.toLowerCase(),
+          },
+        }
+      );
 
+      if (response.data && response.data.successful) {
+        setTransactions(response.data.content); // Set fetched transactions
+        console.log("Fetched transactions successfully");
+      } else {
+        setError(response.data.message);
+      }
+    } catch (error) {
+      setError("Error fetching transactions: " + error.message);
+    }
+  };
 
-  // Fetch historical data for the selected coin (last 7 days)
+  // Fetch historical data and transactions for the selected coin
   useEffect(() => {
     const fetchChartData = async () => {
       try {
@@ -96,8 +110,7 @@ function TradeModal({ coin, onClose }) {
         );
         const data = await response.json();
 
-        // Prepare data for the chart
-        const prices = data.prices.map((price) => price[1]); // price[1] is the price at each timestamp
+        const prices = data.prices.map((price) => price[1]);
         const timestamps = data.prices.map((price) =>
           new Date(price[0]).toLocaleDateString()
         );
@@ -119,8 +132,17 @@ function TradeModal({ coin, onClose }) {
       }
     };
 
+    console.log("im 344");
     fetchChartData();
-  }, [coin]);
+  }, [coin, transactions, setTransactions]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTransactions();
+    };
+
+    fetchData();
+  }, [coin]); // or any other relevant dependency
 
   const handleQuantityChange = (e) => {
     setQuantity(e.target.value);
@@ -129,8 +151,8 @@ function TradeModal({ coin, onClose }) {
   const totalPrice = (coin.current_price * quantity).toFixed(2);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ">
+      <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative ">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">{coin.name}</h2>
           <button onClick={onClose} className="text-red-500 font-bold">
@@ -159,7 +181,7 @@ function TradeModal({ coin, onClose }) {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Total Price (USD)
+            Total Price (INR)
           </label>
           <input
             type="text"
@@ -175,6 +197,25 @@ function TradeModal({ coin, onClose }) {
             <Line data={chartData} options={{ responsive: true }} />
           ) : (
             <p>Loading chart...</p>
+          )}
+        </div>
+
+        {/* Display Transaction History */}
+        <div className="mb-4 max-h-64 overflow-auto border-gray-300 p-4 bg-gray-100">
+          <h3 className="text-lg font-bold">Transaction History</h3>
+          {transactions.length > 0 ? (
+            <ul className="text-sm">
+              {transactions.map((transaction, index) => (
+                <li key={index} className="mb-2">
+                  <strong>{transaction.type.toUpperCase()}:</strong>{" "}
+                  {transaction.quantity} coins at ₹
+                  {transaction.priceAtTransaction} ( Total: ₹
+                  {transaction.paidAmount})
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No transactions found for this coin.</p>
           )}
         </div>
 

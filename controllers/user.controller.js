@@ -1,3 +1,4 @@
+const Transaction = require("../models/transaction.models");
 const User = require("../models/user.models");
 
 async function handleSignup(req, res) {
@@ -147,10 +148,79 @@ async function handleIsLoggedin(req, res) {
     message: "User is exist!",
   });
 }
+
+// async function handleTransactionVisible(req, res) {
+//   const userId = req.cookies.userId;
+//   const { coinId } = req.body;
+
+//   const transactions = await Transaction.find({
+//     userId: userId,
+//     coinId: coinId,
+//   });
+
+//   if (!transactions) {
+//     return res.status(404).json({
+//       successful: false,
+//       message: "You have not made any trade in this coin!",
+//     });
+//   }
+
+//   const serializedTransactions = transactions.map((transaction) => ({
+//     type: transaction.type,
+//     quantity: transaction.quantityOfCoins,
+//     priceAtTransaction: transaction.priceAtTransaction,
+//     paidAmount: transaction.paidAmount,
+//   }));
+
+//   return res.status(200).json({
+//     successful: true,
+//     content: serializedTransactions,
+//   });
+// }
+
+async function handleTransactionVisible(req, res) {
+  const userId = req.cookies.userId;
+  const { coinId } = req.query;
+
+  // Find the transactions
+  console.log("User ID:"+userId)
+  const transactions = await Transaction.find({
+    userId: userId,
+    coinId: coinId,
+  });
+
+  // Check if no transactions were found (empty array)
+  if (!transactions || transactions.length === 0) {
+    return res.status(404).json({
+      successful: false,
+      message: "You have not made any trade in this coin!",
+    });
+  }
+
+  // Serialize the transactions to send only the necessary fields
+  // console.log("Tansaction Data: "+transactions)
+  const serializedTransactions = transactions.map((transaction) => ({
+    type: transaction.type,
+    quantity: transaction.quantityOfCoins,
+    priceAtTransaction: transaction.priceAtTransaction,
+    paidAmount: transaction.paidAmount,
+    // userId:transaction.userId == "66ec67985a13e918e81334cc"
+  }));
+
+
+  // Return the transactions in the response
+  return res.status(200).json({
+    successful: true,
+    content: serializedTransactions,
+  });
+}
+
+
 module.exports = {
   handleSignup,
   handleLogin,
   handleLogout,
   handleBalanceFetching,
   handleIsLoggedin,
+  handleTransactionVisible,
 };

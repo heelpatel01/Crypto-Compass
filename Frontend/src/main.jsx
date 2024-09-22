@@ -9,9 +9,11 @@ import Login from "./pages/Login.jsx";
 import "./index.css";
 import { AuthProvider } from "./contexts/AuthProvider.jsx";
 import Exchange from "./pages/Exchange.jsx";
+import Blogs  from "./pages/Blogs.jsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Header from "./components/Header.jsx";
+import ErrorPage from "./pages/ErrorPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,22 @@ const router = createBrowserRouter([
       </>
     ),
   },
+  {
+    path: "/blogs",
+    element: (
+      <>
+        <Blogs />
+      </>
+    ),
+  },
+  {
+    path:"*",
+    element:(
+      <>
+      <ErrorPage/>
+        </>
+    )
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

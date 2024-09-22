@@ -53,7 +53,7 @@ function Login() {
       <div className="flex items-center justify-center py-10">
         <div className="bg-gray-800 text-gray-300 p-8 rounded-lg shadow-lg w-full max-w-md">
           {/* Login Header */}
-          <h2 className="text-4xl font-bold text-center bg-gradient-to-r from-purple-400 via-blue-500 to-blue-600 text-transparent bg-clip-text mb-8">
+          <h2 className="p-1 text-4xl font-bold text-center bg-gradient-to-r from-purple-400 via-blue-500 to-blue-600 text-transparent bg-clip-text mb-8">
             Login
           </h2>
 

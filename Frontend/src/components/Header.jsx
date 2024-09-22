@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import axiosInstance from "../Utils/AxiosInstance";
 import { AuthContext } from "../contexts/AuthProvider";
+import logo from "../assets/cryptocompasslogo.jpg"; // The imported logo
+import "./Header.css"
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +32,7 @@ function Header() {
     authState.setUniversalLoggedin,
     login,
     setLogin,
-  ]); // Empty array ensures it runs only on component mount
+  ]);
 
   const handleLogout = async () => {
     try {
@@ -59,9 +61,9 @@ function Header() {
     <header className="bg-gray-900 text-gray-300 shadow-lg">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo Section */}
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-500 to-blue-600 text-transparent bg-clip-text">
+        <div className="flex items-center">
           <Link to="/" className="hover:text-white transition-colors">
-            CryptoCompass
+           <div className="font-semibold">CRYPTO COMPASS</div>
           </Link>
         </div>
 
