@@ -75,20 +75,20 @@ async function handleLogin(req, res) {
 
     // res.cookie("userId", user._id);
 
-    return res
+    return res.cookie("userId", user._id, {
+      httpOnly: false,
+      secure: true,
+      // Set to true if using HTTPS
+      sameSite: "None", // Required if cookies are sent cross-origin
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
       .status(200)
       .json({
         success: true,
         message: "User loggedin successfully.",
         user,
       })
-      .cookie("userId", user._id, {
-        httpOnly: false,
-        secure: true,
-        // Set to true if using HTTPS
-        sameSite: "None", // Required if cookies are sent cross-origin
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      ;
 
   } catch (error) {
     console.log("LN-85 Error while login");
