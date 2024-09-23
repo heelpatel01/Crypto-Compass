@@ -73,7 +73,13 @@ async function handleLogin(req, res) {
       });
     }
 
-    res.cookie("userId", user._id);
+    // res.cookie("userId", user._id);
+    res.cookie("userId", user._id, {
+      httpOnly: true,
+      secure: false, // Set to true if using HTTPS
+      // sameSite: 'None' // Required if cookies are sent cross-origin
+  });
+  
 
     return res.status(200).json({
       success: true,
