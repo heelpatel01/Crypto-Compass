@@ -83,12 +83,13 @@ async function handleLogin(req, res) {
         user,
       })
       .cookie("userId", user._id, {
-        httpOnly: true,
+        httpOnly: false,
         secure: true,
         // Set to true if using HTTPS
         sameSite: "None", // Required if cookies are sent cross-origin
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
+
   } catch (error) {
     console.log("LN-85 Error while login");
     return res.status(500).json({
