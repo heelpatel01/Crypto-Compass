@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
@@ -7,7 +8,8 @@ const transactionRouter = require("./routes/transaction.routes");
 const testingRouter = require("./routes/testing.routes");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
+const { createHandlers } = require("@enjoys/exception");
+const { ExceptionHandler } = createHandlers();
 
 mongoose
   .connect(process.env.MONGO_DB_URI)
@@ -24,7 +26,10 @@ const allowedOrigins = [
 app.use((req, res, next) => {
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Access-Control-Allow-Origin", "https://cryptocompass-fe.vercel.app");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://cryptocompass-fe.vercel.app"
+  );
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
@@ -55,6 +60,12 @@ app.use("/test", testingRouter);
 app.get("/", (req, res) => {
   res.json({
     name: "Narendra Modi",
+  });
+});
+
+app.use("/*", (_, res) => {
+  return res.json({
+    KuchBhi: 123,
   });
 });
 
