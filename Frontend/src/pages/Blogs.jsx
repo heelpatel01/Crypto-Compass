@@ -46,7 +46,7 @@ function Blogs() {
         <div style={styles.icon}>&#8987;</div>
         <h1 style={styles.heading}>Coming Soon!</h1>
         <p style={styles.body}>
-          We're working hard to bring you exciting content. Stay tuned!
+          Were working hard to bring you exciting content. Stay tuned!
         </p>
         <Link to="/" style={{ textDecoration: "none" }}>
           <button

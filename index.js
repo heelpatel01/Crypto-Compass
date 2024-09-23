@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/user.routes");
 const holdingRouter = require("./routes/holding.routes");
 const transactionRouter = require("./routes/transaction.routes");
+const testingRouter = require("./routes/testing.routes");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
@@ -38,6 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/user", userRouter);
 app.use("/holding", holdingRouter);
 app.use("/transaction", transactionRouter);
+app.use("/test", testingRouter);
 
 app.get("/", (req, res) => {
   res.json({
