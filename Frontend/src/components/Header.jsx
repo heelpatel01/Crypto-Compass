@@ -17,8 +17,10 @@ function Header() {
         const response = await axiosInstance.get("/user/isloggedin");
         if (response.data && response.data.success) {
           setLogin(true);
+          console.log("success: 20");
         } else {
           setLogin(false);
+          console.log("success: 23");
         }
       } catch (error) {
         console.error("Error checking login status:", error);
