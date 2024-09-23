@@ -24,7 +24,7 @@ const allowedOrigins = [
 app.use((req, res, next) => {
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Access-Control-Allow-Origin", `${req.hostname}`);
+  res.setHeader("Access-Control-Allow-Origin", "https://cryptocompass-fe.vercel.app");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
@@ -33,6 +33,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"
   );
+  // console.log(req);
   next();
 });
 
