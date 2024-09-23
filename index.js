@@ -17,6 +17,7 @@ mongoose
 const allowedOrigins = [
   "https://crypto-compass-l4zpsks4g-heelpatelcodesgmailcoms-projects.vercel.app/",
   "https://crypto-compass-three.vercel.app/",
+  "https://cryptocompass-fe.vercel.app/",
   "http://localhost:5173", // Add any other development origins if needed
 ];
 
