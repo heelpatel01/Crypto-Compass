@@ -46,10 +46,12 @@ function Exchange() {
     <>
       <AuthProvider>
         <Header />
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold mb-4">Exchange</h1>
+        <div className="mx-auto px-4 py-6 bg-gray-900 text-gray-300">
+          <h1 className=" py-2 text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-blue-500 to-blue-600">
+            Exchange
+          </h1>
           {loading ? (
-            <p>Loading...</p>
+            <p className="text-purple-400">Loading...</p>
           ) : (
             <CoinList coins={coins} onTradeClick={handleTradeClick} />
           )}

@@ -3,7 +3,6 @@ import axiosInstance from "../utils/axiosInstance";
 import Header from "../components/Header";
 import { AuthProvider } from "../contexts/AuthProvider";
 
-
 function Portfolio() {
   const [portfolioData, setPortfolioData] = useState([]);
   const [investedBalance, setInvestedBalance] = useState(0);

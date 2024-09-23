@@ -28,7 +28,7 @@ function TradeModal({ coin, onClose }) {
   const [chartData, setChartData] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(coin.current_price);
   const [error, setError] = useState(null);
-  const [transactions, setTransactions] = useState([]); // To store transaction history
+  const [transactions, setTransactions] = useState([]);
 
   const handleBuy = async () => {
     if (!quantity || quantity * currentPrice < 100) {
@@ -91,7 +91,7 @@ function TradeModal({ coin, onClose }) {
       );
 
       if (response.data && response.data.successful) {
-        setTransactions(response.data.content); // Set fetched transactions
+        setTransactions(response.data.content);
         console.log("Fetched transactions successfully");
       } else {
         setError(response.data.message);
@@ -101,7 +101,6 @@ function TradeModal({ coin, onClose }) {
     }
   };
 
-  // Fetch historical data and transactions for the selected coin
   useEffect(() => {
     const fetchChartData = async () => {
       try {
@@ -122,7 +121,7 @@ function TradeModal({ coin, onClose }) {
               label: `${coin.name} Price (INR)`,
               data: prices,
               borderColor: "rgba(75, 192, 192, 1)",
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              backgroundColor: "rgba(75, 192, 192, 0.3)",
               fill: true,
             },
           ],
@@ -132,17 +131,12 @@ function TradeModal({ coin, onClose }) {
       }
     };
 
-    console.log("im 344");
     fetchChartData();
-  }, [coin, transactions, setTransactions]);
+  }, [coin]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchTransactions();
-    };
-
-    fetchData();
-  }, [coin]); // or any other relevant dependency
+    fetchTransactions();
+  }, [coin]);
 
   const handleQuantityChange = (e) => {
     setQuantity(e.target.value);
@@ -151,10 +145,10 @@ function TradeModal({ coin, onClose }) {
   const totalPrice = (coin.current_price * quantity).toFixed(2);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ">
-      <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative ">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center">
+      <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl shadow-lg w-96 p-6 relative border border-white border-opacity-20 transition-transform transform hover:scale-105">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">{coin.name}</h2>
+          <h2 className="text-2xl font-bold text-white">{coin.name}</h2>
           <button onClick={onClose} className="text-red-500 font-bold">
             X
           </button>
@@ -162,17 +156,14 @@ function TradeModal({ coin, onClose }) {
 
         <div className="my-4 flex items-center">
           <img src={coin.image} alt={coin.name} className="w-10 h-10 mr-2" />
-          <p className="text-lg">₹{coin.current_price.toLocaleString()}</p>
+          <p className="text-lg text-white">₹{coin.current_price.toLocaleString()}</p>
         </div>
 
-        {/* Quantity and Total Price */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Quantity
-          </label>
+          <label className="block text-sm font-medium text-gray-200">Quantity</label>
           <input
             type="number"
-            className="border rounded-lg w-full px-3 py-2"
+            className="border border-white border-opacity-30 rounded-lg w-full px-3 py-2 bg-transparent text-white transition duration-300 focus:outline-none focus:ring focus:ring-blue-500"
             value={quantity}
             onChange={handleQuantityChange}
             min="1"
@@ -180,54 +171,48 @@ function TradeModal({ coin, onClose }) {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Total Price (INR)
-          </label>
+          <label className="block text-sm font-medium text-gray-200">Total Price (INR)</label>
           <input
             type="text"
-            className="border rounded-lg w-full px-3 py-2"
+            className="border border-white border-opacity-30 rounded-lg w-full px-3 py-2 bg-transparent text-white"
             value={totalPrice}
             readOnly
           />
         </div>
 
-        {/* Line Chart */}
         <div className="mb-4">
           {chartData ? (
-            <Line data={chartData} options={{ responsive: true }} />
+            <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />
           ) : (
-            <p>Loading chart...</p>
+            <p className="text-white">Loading chart...</p>
           )}
         </div>
 
-        {/* Display Transaction History */}
-        <div className="mb-4 max-h-64 overflow-auto border-gray-300 p-4 bg-gray-100">
-          <h3 className="text-lg font-bold">Transaction History</h3>
+        <div className="mb-4 max-h-64 overflow-auto border-gray-300 p-4 bg-gray-700 bg-opacity-50 rounded-lg">
+          <h3 className="text-lg font-bold text-white">Transaction History</h3>
           {transactions.length > 0 ? (
-            <ul className="text-sm">
+            <ul className="text-sm text-gray-300">
               {transactions.map((transaction, index) => (
                 <li key={index} className="mb-2">
                   <strong>{transaction.type.toUpperCase()}:</strong>{" "}
-                  {transaction.quantity} coins at ₹
-                  {transaction.priceAtTransaction} ( Total: ₹
-                  {transaction.paidAmount})
+                  {transaction.quantity} coins at ₹{transaction.priceAtTransaction} ( Total: ₹{transaction.paidAmount})
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No transactions found for this coin.</p>
+            <p className="text-gray-300">No transactions found for this coin.</p>
           )}
         </div>
 
         <div className="flex justify-between">
           <button
-            className="bg-green-500 text-white py-2 px-4 rounded-lg"
+            className="bg-green-500 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md hover:shadow-lg"
             onClick={handleBuy}
           >
             Buy
           </button>
           <button
-            className="bg-red-500 text-white py-2 px-4 rounded-lg"
+            className="bg-red-500 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md hover:shadow-lg"
             onClick={handleSell}
           >
             Sell
