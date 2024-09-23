@@ -14,11 +14,12 @@ function Portfolio() {
     axiosInstance
       .get("/holding/portfolio")
       .then((response) => {
-        const { holdings, investedBalance, investableBalance, totalBalance } = response.data;
-        setPortfolioData(holdings);
-        setInvestedBalance(investedBalance);
-        setInvestableBalance(investableBalance);
-        setTotalBalance(totalBalance);
+        const { holdings, investedBalance, investableBalance, totalBalance } =
+          response.data || {};
+        setPortfolioData(holdings || []); // Use an empty array as a fallback for holdings
+        setInvestedBalance(investedBalance || 0);
+        setInvestableBalance(investableBalance || 0);
+        setTotalBalance(totalBalance || 0);
       })
       .catch((error) => {
         console.error("Error fetching portfolio data:", error);
@@ -46,7 +47,7 @@ function Portfolio() {
                 Investable Balance
               </h3>
               <p className="text-2xl font-bold">
-                ₹{investableBalance.toFixed(2)}
+                ₹{investableBalance?.toFixed(2)}
               </p>
             </div>
 
@@ -55,7 +56,7 @@ function Portfolio() {
                 Invested Balance
               </h3>
               <p className="text-2xl font-bold">
-                ₹{investedBalance.toFixed(2)}
+                ₹{investedBalance?.toFixed(2)}
               </p>
             </div>
 
@@ -63,7 +64,7 @@ function Portfolio() {
               <h3 className="text-lg font-semibold text-green-400 mb-2">
                 Total Balance
               </h3>
-              <p className="text-2xl font-bold">₹{totalBalance.toFixed(2)}</p>
+              <p className="text-2xl font-bold">₹{totalBalance?.toFixed(2)}</p>
             </div>
           </div>
         </div>
@@ -83,16 +84,26 @@ function Portfolio() {
               </tr>
             </thead>
             <tbody>
-              {portfolioData.map((coin, index) => {
-                return (
+              {portfolioData.length > 0 ? (
+                portfolioData.map((coin, index) => (
                   <tr key={index} className="border-b border-gray-700">
                     <td className="px-6 py-4 capitalize">{coin.coinId}</td>
                     <td className="px-6 py-4">{coin.quantity}</td>
-                    <td className="px-6 py-4">₹{coin.investedInr.toFixed(2)}</td>
-                    <td className="px-6 py-4">₹{coin.averageBuyingPrice.toFixed(2)}</td>
+                    <td className="px-6 py-4">
+                      ₹{coin.investedInr?.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4">
+                      ₹{coin.averageBuyingPrice?.toFixed(2)}
+                    </td>
                   </tr>
-                );
-              })}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="px-6 py-4 text-center">
+                    No holdings available.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
