@@ -74,18 +74,21 @@ async function handleLogin(req, res) {
     }
 
     // res.cookie("userId", user._id);
-    res.cookie("userId", user._id, {
-      httpOnly: true,
-      secure: true, // Set to true if using HTTPS
-      // sameSite: 'None' // Required if cookies are sent cross-origin
-  });
-  
 
-    return res.status(200).json({
-      success: true,
-      message: "User loggedin successfully.",
-      user,
-    });
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "User loggedin successfully.",
+        user,
+      })
+      .cookie("userId", user._id, {
+        httpOnly: true,
+        secure: true,
+        // Set to true if using HTTPS
+        sameSite: "None", // Required if cookies are sent cross-origin
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
   } catch (error) {
     console.log("LN-85 Error while login");
     return res.status(500).json({
@@ -189,7 +192,7 @@ async function handleTransactionVisible(req, res) {
   const { coinId } = req.query;
 
   // Find the transactions
-  console.log("User ID:"+userId)
+  console.log("User ID:" + userId);
   const transactions = await Transaction.find({
     userId: userId,
     coinId: coinId,
@@ -213,14 +216,12 @@ async function handleTransactionVisible(req, res) {
     // userId:transaction.userId == "66ec67985a13e918e81334cc"
   }));
 
-
   // Return the transactions in the response
   return res.status(200).json({
     successful: true,
     content: serializedTransactions,
   });
 }
-
 
 module.exports = {
   handleSignup,
