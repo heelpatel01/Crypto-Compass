@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../Utils/AxiosInstance";
 import Header from "../components/Header";
 import { AuthProvider } from "../contexts/AuthProvider";
 
